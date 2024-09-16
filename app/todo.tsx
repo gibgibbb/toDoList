@@ -11,6 +11,11 @@ interface Todo {
 
 const App = () => {
   const [fontLoaded, setFontLoaded] = useState(false);
+  const [todos, setTodos] = useState<Todo[]>([]);
+  const [newTodo, setNewTodo] = useState<string>('');
+  const [newNote, setNewNote] = useState<string>(''); // State for the note
+  const [editMode, setEditMode] = useState<boolean>(false);
+  const [editTodoId, setEditTodoId] = useState<number | null>(null);
 
   useEffect(() => {
     const loadFonts = async () => {
@@ -21,11 +26,6 @@ const App = () => {
     };
     loadFonts();
   }, []);
-
-  const [todos, setTodos] = useState<Todo[]>([]);
-  const [newTodo, setNewTodo] = useState<string>('');
-  const [editMode, setEditMode] = useState<boolean>(false);
-  const [editTodoId, setEditTodoId] = useState<number | null>(null);
 
   if (!fontLoaded) {
     return <Text>Loading Fonts...</Text>;
@@ -53,15 +53,16 @@ const App = () => {
     setEditMode(true);
     setEditTodoId(id);
     setNewTodo(title);
-    setNewNote(note);
+    setNewNote(note || '');
   };
 
   const updateTodo = () => {
     if (editTodoId !== null && newTodo.trim()) {
       setTodos(
-        todos.map(todo => (todo.id === editTodoId ? { ...todo, title: newTodo } : todo))
+        todos.map(todo => (todo.id === editTodoId ? { ...todo, title: newTodo, note: newNote } : todo))
       );
       setNewTodo('');
+      setNewNote('');
       setEditMode(false);
       setEditTodoId(null);
     }
@@ -72,11 +73,11 @@ const App = () => {
       <TouchableOpacity onPress={() => toggleComplete(item.id)} style={styles.checkbox}>
         <Text style={styles.checkboxText}>{item.completed ? '✔️' : '⬜'}</Text>
       </TouchableOpacity>
-      <Text style={item.completed ? styles.completedText : styles.todoText}>{item.title}</Text>
+      <View style={styles.todoContent}>
+        <Text style={item.completed ? styles.completedText : styles.todoText}>{item.title}</Text>
+        {item.note && <Text style={styles.noteText}>{item.note}</Text>} {/* Display note if available */}
+      </View>
       <View style={styles.actions}>
-        <TouchableOpacity onPress={() => startEditing(item.id, item.title)}>
-          <Text style={styles.actionText}>Edit</Text>
-        </TouchableOpacity>
         <TouchableOpacity onPress={() => startEditing(item.id, item.title, item.note)}>
           <Text style={styles.actionText}>Edit</Text>
         </TouchableOpacity>
