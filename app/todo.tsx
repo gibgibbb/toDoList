@@ -6,16 +6,10 @@ interface Todo {
   id: number;
   title: string;
   completed: boolean;
-  note: string;
 }
 
 const App = () => {
   const [fontLoaded, setFontLoaded] = useState(false);
-  const [todos, setTodos] = useState<Todo[]>([]);
-  const [newTodo, setNewTodo] = useState<string>('');
-  const [newNote, setNewNote] = useState<string>(''); // State for the note
-  const [editMode, setEditMode] = useState<boolean>(false);
-  const [editTodoId, setEditTodoId] = useState<number | null>(null);
 
   useEffect(() => {
     const loadFonts = async () => {
@@ -27,15 +21,19 @@ const App = () => {
     loadFonts();
   }, []);
 
+  const [todos, setTodos] = useState<Todo[]>([]);
+  const [newTodo, setNewTodo] = useState<string>('');
+  const [editMode, setEditMode] = useState<boolean>(false);
+  const [editTodoId, setEditTodoId] = useState<number | null>(null);
+
   if (!fontLoaded) {
     return <Text>Loading Fonts...</Text>;
   }
 
   const addTodo = () => {
     if (newTodo.trim()) {
-      setTodos([...todos, { id: Date.now(), title: newTodo, completed: false, note: newNote }]);
+      setTodos([...todos, { id: Date.now(), title: newTodo, completed: false }]);
       setNewTodo('');
-      setNewNote('');
     }
   };
 
@@ -53,16 +51,14 @@ const App = () => {
     setEditMode(true);
     setEditTodoId(id);
     setNewTodo(title);
-    setNewNote(note || '');
   };
 
   const updateTodo = () => {
     if (editTodoId !== null && newTodo.trim()) {
       setTodos(
-        todos.map(todo => (todo.id === editTodoId ? { ...todo, title: newTodo, note: newNote } : todo))
+        todos.map(todo => (todo.id === editTodoId ? { ...todo, title: newTodo } : todo))
       );
       setNewTodo('');
-      setNewNote('');
       setEditMode(false);
       setEditTodoId(null);
     }
@@ -73,12 +69,9 @@ const App = () => {
       <TouchableOpacity onPress={() => toggleComplete(item.id)} style={styles.checkbox}>
         <Text style={styles.checkboxText}>{item.completed ? '✔️' : '⬜'}</Text>
       </TouchableOpacity>
-      <View style={styles.todoContent}>
-        <Text style={item.completed ? styles.completedText : styles.todoText}>{item.title}</Text>
-        {item.note && <Text style={styles.noteText}>{item.note}</Text>} {/* Display note if available */}
-      </View>
+      <Text style={item.completed ? styles.completedText : styles.todoText}>{item.title}</Text>
       <View style={styles.actions}>
-        <TouchableOpacity onPress={() => startEditing(item.id, item.title, item.note)}>
+        <TouchableOpacity onPress={() => startEditing(item.id, item.title)}>
           <Text style={styles.actionText}>Edit</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => deleteTodo(item.id)}>
@@ -91,29 +84,13 @@ const App = () => {
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.header}>To-Do List</Text>
-
       <TextInput
         style={styles.input}
         value={newTodo}
         placeholder="Enter a new task"
         onChangeText={setNewTodo}
       />
-
-      <TextInput
-        style={styles.input}
-        value={newNote}
-        placeholder="Enter a note (optional)"
-        onChangeText={setNewNote}
-      />
-
       <Button title={editMode ? 'Update Task' : 'Add Task'} onPress={editMode ? updateTodo : addTodo} />
-      <Button title="Check All" onPress={() => {
-        setTodos(todos.map(todo => ({ ...todo, completed: true })));
-      }}/>
-
-      <Button title="Uncheck All" onPress={() => {
-        setTodos(todos.map(todo => ({ ...todo, completed: false })));
-      }}/>
       <FlatList
         data={todos}
         keyExtractor={item => item.id.toString()}
@@ -173,7 +150,6 @@ const styles = StyleSheet.create({
   actions: {
     flexDirection: 'row',
     marginLeft: 'auto',
-    justifyContent: 'space-between',
   },
   actionText: {
     color: 'blue',
