@@ -6,6 +6,7 @@ interface Todo {
   id: number;
   title: string;
   completed: boolean;
+  note: string;
 }
 
 const App = () => {
@@ -32,8 +33,9 @@ const App = () => {
 
   const addTodo = () => {
     if (newTodo.trim()) {
-      setTodos([...todos, { id: Date.now(), title: newTodo, completed: false }]);
+      setTodos([...todos, { id: Date.now(), title: newTodo, completed: false, note: newNote }]);
       setNewTodo('');
+      setNewNote('');
     }
   };
 
@@ -51,6 +53,7 @@ const App = () => {
     setEditMode(true);
     setEditTodoId(id);
     setNewTodo(title);
+    setNewNote(note);
   };
 
   const updateTodo = () => {
@@ -74,6 +77,9 @@ const App = () => {
         <TouchableOpacity onPress={() => startEditing(item.id, item.title)}>
           <Text style={styles.actionText}>Edit</Text>
         </TouchableOpacity>
+        <TouchableOpacity onPress={() => startEditing(item.id, item.title, item.note)}>
+          <Text style={styles.actionText}>Edit</Text>
+        </TouchableOpacity>
         <TouchableOpacity onPress={() => deleteTodo(item.id)}>
           <Text style={styles.actionText}>Delete</Text>
         </TouchableOpacity>
@@ -84,13 +90,29 @@ const App = () => {
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.header}>To-Do List</Text>
+
       <TextInput
         style={styles.input}
         value={newTodo}
         placeholder="Enter a new task"
         onChangeText={setNewTodo}
       />
+
+      <TextInput
+        style={styles.input}
+        value={newNote}
+        placeholder="Enter a note (optional)"
+        onChangeText={setNewNote}
+      />
+
       <Button title={editMode ? 'Update Task' : 'Add Task'} onPress={editMode ? updateTodo : addTodo} />
+      <Button title="Check All" onPress={() => {
+        setTodos(todos.map(todo => ({ ...todo, completed: true })));
+      }}/>
+
+      <Button title="Uncheck All" onPress={() => {
+        setTodos(todos.map(todo => ({ ...todo, completed: false })));
+      }}/>
       <FlatList
         data={todos}
         keyExtractor={item => item.id.toString()}
@@ -150,6 +172,7 @@ const styles = StyleSheet.create({
   actions: {
     flexDirection: 'row',
     marginLeft: 'auto',
+    justifyContent: 'space-between',
   },
   actionText: {
     color: 'blue',
