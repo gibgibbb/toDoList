@@ -3,4 +3,9 @@ export interface Todo {
     title: string;
     completed: boolean;
   }
-  
+
+export interface TodoList {
+    id: number;
+    name: string;
+    todos: Todo[];
+  }
