@@ -27,5 +27,8 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     resizeMode: "contain",
+    borderWidth: 2,
+    borderColor: "purple",
+    borderRadius: 20,
   },
 });

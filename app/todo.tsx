@@ -2,12 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { SafeAreaView, StyleSheet, FlatList, TextInput, Button, Text, View, TouchableOpacity } from 'react-native';
 import * as Font from 'expo-font'; 
 
-interface Todo {
-  id: number;
-  title: string;
-  completed: boolean;
-}
-
 const App = () => {
   const [fontLoaded, setFontLoaded] = useState(false);
 
