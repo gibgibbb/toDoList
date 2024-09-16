@@ -198,7 +198,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 16,
     textAlign: 'center',
-    fontFamily: 'Montserrat',
   },
   addListContainer: {
     flexDirection: 'row',
@@ -212,7 +211,6 @@ const styles = StyleSheet.create({
     padding: 8,
     marginRight: 8,
     marginBottom: 10,
-    fontFamily: 'Montserrat',
   },
   listContainer: {
     backgroundColor: '#fff',
@@ -259,13 +257,11 @@ const styles = StyleSheet.create({
   },
   todoText: {
     fontSize: 16,
-    fontFamily: 'Montserrat',
   },
   completedText: {
     fontSize: 16,
     textDecorationLine: 'line-through',
     color: 'gray',
-    fontFamily: 'Montserrat',
   },
   noteText: {
     fontSize: 14,
@@ -279,7 +275,6 @@ const styles = StyleSheet.create({
   actionText: {
     color: 'blue',
     marginHorizontal: 10,
-    fontFamily: 'Montserrat',
   },
   addTodoContainer: {
     marginTop: 8,
